@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set +x
+set -x
 
 # Make sure that an input filename has been provided
 if [ "$1" == '' ]; then
