@@ -17,6 +17,10 @@ if [ ! -f "$MP3" ]; then
     exit 1
 fi
 
+if [ ! -d "../transcripts/" ]; then
+    mkdir ../transcripts
+fi
+
 # Save the root filename
 FILENAME=${MP3/.mp3/}
 
@@ -24,7 +28,7 @@ FILENAME=${MP3/.mp3/}
 ffmpeg -i "$FILENAME".mp3 -ar 16000 "$FILENAME".wav || exit 1
 
 # Generate the transcript
-./whisper -m models/ggml-base.en.bin -f "$FILENAME".wav --output-srt --output-file "$FILENAME"
+./whisper -m models/ggml-base.en.bin -f "$FILENAME".wav --output-srt --output-file ../transcripts/"$FILENAME"
 
 # Delete the WAV
 rm -f "$FILENAME".wav
