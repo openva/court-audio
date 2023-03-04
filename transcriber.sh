@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -x
-
 # Make sure that an input filename has been provided
 if [ "$1" == '' ]; then
     echo "No filename provided"
@@ -12,23 +10,23 @@ fi
 MP3="$1"
 
 # Make sure the file exists
-if [ ! -f "$MP3" ]; then
+if [ ! -f audio/"$MP3" ]; then
     echo "File does not exist"
     exit 1
 fi
 
-if [ ! -d "../transcripts/" ]; then
-    mkdir ../transcripts
+if [ ! -d "transcripts/" ]; then
+    mkdir transcripts
 fi
 
 # Save the root filename
 FILENAME=${MP3/.mp3/}
 
 # Convert the MP3 to a WAV
-ffmpeg -i "$FILENAME".mp3 -ar 16000 "$FILENAME".wav || exit 1
+ffmpeg -i audio/"$FILENAME".mp3 -ar 16000 audio/"$FILENAME".wav || exit 1
 
 # Generate the transcript
-./whisper -m models/ggml-base.en.bin -f "$FILENAME".wav --output-srt --output-file ../transcripts/"$FILENAME"
+./whisper -m models/ggml-base.en.bin -f audio/"$FILENAME".wav --output-srt --output-file transcripts/"$FILENAME"
 
 # Delete the WAV
-rm -f "$FILENAME".wav
+rm -f audio/"$FILENAME".wav
