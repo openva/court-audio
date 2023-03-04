@@ -1,32 +1,23 @@
 #!/usr/bin/env bash
 
-# Make sure that an input filename has been provided
-if [ "$1" == '' ]; then
-    echo "No filename provided"
-    exit 1
-fi
-
-# Use a better variable name
-MP3="$1"
-
-# Make sure the file exists
-if [ ! -f audio/"$MP3" ]; then
-    echo "File does not exist"
-    exit 1
-fi
-
 if [ ! -d "transcripts/" ]; then
     mkdir transcripts
 fi
 
-# Save the root filename
-FILENAME=${MP3/.mp3/}
+# Get a list of all untranscribed files
+audio_files=( $(find audio/ -name "*.mp3" -exec basename {} .mp3 \;) )
+transcript_files=( $(find transcripts/ -name "*.srt" -exec basename {} .srt \;) )
+untranscribed_files=( $(echo "${audio_files[@]}" "${transcript_files[@]}" | tr ' ' '\n' | sort | uniq -u) )
 
-# Convert the MP3 to a WAV
-ffmpeg -i audio/"$FILENAME".mp3 -ar 16000 audio/"$FILENAME".wav || exit 1
+for filename in "${untranscribed_files[@]}"; do
 
-# Generate the transcript
-./whisper -m models/ggml-base.en.bin -f audio/"$FILENAME".wav --output-srt --output-file transcripts/"$FILENAME"
+    # Convert the MP3 to a WAV
+    ffmpeg -y -i audio/"$filename".mp3 -ar 16000 audio/"$filename".wav || exit 1
 
-# Delete the WAV
-rm -f audio/"$FILENAME".wav
+    # Generate the transcript
+    ./whisper -m models/ggml-base.en.bin -f audio/"$filename".wav --output-srt --output-file transcripts/"$filename"
+
+    # Delete the WAV
+    rm -f audio/"$filename".wav
+
+done
