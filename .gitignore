@@ -2,3 +2,4 @@ whisper
 models/
 audio/
 transcripts/
+.DS_Store
