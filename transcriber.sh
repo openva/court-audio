@@ -14,8 +14,13 @@ for filename in "${untranscribed_files[@]}"; do
     # Convert the MP3 to a WAV
     ffmpeg -y -i audio/"$filename".mp3 -ar 16000 audio/"$filename".wav || exit 1
 
-    # Generate the transcript
-    ./whisper -m models/ggml-base.en.bin -f audio/"$filename".wav --output-srt --output-file transcripts/"$filename"
+    # Generate the transcript differently in macOS and Linux
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        ./whisper -m models/ggml-medium.en.bin --output-srt --output-file transcripts/"$filename" audio/"$filename".wav
+    else
+        whisper audio/"$filename".wav --output_format=srt --output_dir=transcripts --model=small --language=English --fp16=False
+    fi
+    
 
     # Delete the WAV
     rm -f audio/"$filename".wav
