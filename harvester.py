@@ -90,7 +90,7 @@ for argument_url in argument_urls:
         case_id = case_id.replace('*', '')
 
         # Add this case to the main list
-        all_arguments.append({'case_id': case_id, 'case_name': case_name, 'url': case_mp3})   
+        all_arguments.append({'case_id': case_id, 'case_name': case_name, 'audio': case_mp3})   
 
 # Save the resulting data to a file
 with open('arguments.json', 'w', encoding='utf-8') as f:
