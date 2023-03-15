@@ -14,5 +14,6 @@ aws s3 cp --no-progress "$tmp2" s3://courtaudio/arguments.json
 aws s3 sync --no-progress transcripts/ s3://courtaudio/transcripts/
 aws s3 sync --no-progress audio/ s3://courtaudio/audio/ --exclude "*" --include "*.mp3"
 
-# Invalidate the cached JSON
-aws cloudfront create-invalidation --distribution-id EM9XCQXYT1OYQ  --paths "/arguments.json"
+# Invalidate the cached JSON, piping the output to /dev/null because otherwise the script will
+# halt while awaiting user input
+aws cloudfront create-invalidation --distribution-id EM9XCQXYT1OYQ  --paths "/arguments.json" > /dev/null
