@@ -10,9 +10,9 @@ tmp2=$(mktemp)
 jq 'with_entries(.value |= del(.case_id))' "$tmp" > "$tmp2"
 
 # Copy the file
-aws s3 cp --no-progress "$tmp2" s3://courtaudio/arguments.json
-aws s3 sync --no-progress transcripts/ s3://courtaudio/transcripts/
-aws s3 sync --no-progress audio/ s3://courtaudio/audio/ --exclude "*" --include "*.mp3"
+aws s3 cp --no-progress --acl public-read "$tmp2" s3://courtaudio/arguments.json
+aws s3 sync --no-progress --acl public-read  transcripts/ s3://courtaudio/transcripts/ --exclude "*" --include "*.srt"
+#aws s3 sync --no-progress --acl public-read audio/ s3://courtaudio/audio/ --exclude "*" --include "*.mp3"
 
 # Invalidate the cached JSON, piping the output to /dev/null because otherwise the script will
 # halt while awaiting user input
