@@ -10,7 +10,19 @@ fi
 cases=( $(jq '.[] | select(has("transcript") | not) | .case_id' arguments.json | sed -e 's/"//g') )
 
 # Get a list of all transcript files
-transcripts=( $(ls transcripts/*.srt | xargs -n 1 basename | sed -e 's/\.srt$//') )
+transcripts=( $(ls transcripts/*.srt | xargs -n 1 basename |sed -e 's/\.srt$//') )
+
+# Get a list of all transcript files that show signs of being wrong
+blacklist=( $(cat problems.txt |sed -e 's/transcripts\///' |sed -e 's/\.srt$//') )
+
+# Remove blacklisted transcripts
+new_transcripts=()
+for f in "${transcripts[@]}"; do
+  if [[ ! " ${blacklist[@]} " =~ " ${f} " ]]; then
+    new_transcripts+=("$f")
+  fi
+done
+transcripts=("${new_transcripts[@]}")
 
 # Iterate through a list of all cases without transcripts
 for case in "${cases[@]}"; do
