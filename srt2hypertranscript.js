@@ -1,3 +1,5 @@
+// By Chris Zubak-Skees
+
 const fs = require("fs");
 
 const paraSplitTime = 2;
