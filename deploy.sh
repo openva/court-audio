@@ -34,7 +34,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 # If it's Linux
 else
     # Make sure the basic packages are installed
-    sudo apt install -f python3-pip jq ffmpeg
+    sudo apt install -f python3-pip jq ffmpeg node
 
     # Download Whisper
     pip install -U openai-whisper
